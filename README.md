@@ -9,6 +9,6 @@ soon:
 some day:
 
 - pack it as a gem
-- play by browser
+- play in browser
 - cd man graphics!
 - AI?

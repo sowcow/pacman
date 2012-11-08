@@ -53,4 +53,12 @@ describe Map do
 
   end
 
+  describe '.blank' do
+    it 'generates walled map with empty area of given size' do
+      game = Map.blank(2,1)
+      game.all.should == game.all(Wall)
+      game.all(Wall).map(&:at).should =~ [[0,0],[0,1],[0,2],[1,2],[2,2],[3,2],[3,1],[3,0],[2,0],[1,0]]
+    end
+  end
+
 end

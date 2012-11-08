@@ -11,3 +11,14 @@ end
 def food
   Food.new
 end
+
+def board
+  Map.new
+end
+
+class Wall
+  include Movable
+end
+def wall
+  Wall.new
+end

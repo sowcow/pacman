@@ -44,7 +44,11 @@ describe Map do
         subject.all([0..1,0]).should have(1).objects
         subject.all([0,1..1]).should have(3).objects
         subject.all([1..2,0..2]).should have(1).objects
-      end          
+      end
+      specify 'combined filters' do
+        subject.all(Ghost, [0,0]).should have(1).objects
+        subject.all(Ghost, [1,1]).should have(0).objects
+      end
     end
 
   end

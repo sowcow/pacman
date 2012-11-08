@@ -1,7 +1,12 @@
 require 'spec_helper'
 
 describe Movable do
-  
+
+  let(:directions){ %w[ left right up down ].map &:to_sym }
+  let(:one){ ghost }
+  let(:game){ board }
+
+
   describe '#at' do
     it 'takes 2 coordinates or array, used as setter and getter' do
       ghost.at(1,2).at.should == [1,2]
@@ -19,6 +24,39 @@ describe Movable do
       one = ghost
       one.board = 'some'
       expect { one.board = 'some' }.to raise_error
+    end
+  end
+
+  describe '#move' do
+    it 'moves object one step in given direction' do
+      one = ghost
+      board << one.at(3,3)
+      sequence = {left: [2,3], right: [3,3], up: [3,2], down: [3,3]}
+      sequence.each do |direction,ok|
+        one.move direction
+        one.at.should == ok
+      end
+    end
+
+    it 'fail unless can_move?' do
+      game << one.at(3,3)
+      game << wall.at(4,3)
+      expect { one.move(:right) }.to raise_error
+    end
+  end
+
+  describe '#can_move?' do
+    it 'is false when the wall is on the path' do
+      game << one.at(3,3)
+      directions.count { |direction| one.can_move? direction }.should == 4
+      game << wall.at(3,4)
+      directions.count { |direction| one.can_move? direction }.should == 3
+      game << wall.at(4,3)
+      directions.count { |direction| one.can_move? direction }.should == 2
+      game << wall.at(2,3)
+      directions.count { |direction| one.can_move? direction }.should == 1      
+      game << wall.at(3,2)
+      directions.count { |direction| one.can_move? direction }.should == 0      
     end
   end
 end

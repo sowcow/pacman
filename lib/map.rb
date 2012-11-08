@@ -1,92 +1,40 @@
-class Map
-  attr_reader :width, :height
-  BUSY = 'Can''t overwrite busy point'
+module Placeable
+  CANT_PLACE = "can't place object twice"
 
-  def initialize width, height=nil
-    width, height = *width if width.is_a? Array
+  # setter/getter, set once
+  def at *given
+    point = given.flatten
+
+    raise CANT_PLACE if @point && point.any?
     
-    @width, @height = width, height
-    @map = {}
-  end
-
-  def [] *point
-    @map[point]
-  end
-
-  def []= *point, value
-    raise BUSY if @map[point]
-    @map[point] = value if valid? point
-  end
-
-  def positions pattern
-    @map.select { |k,v| pattern === v }.map { |k,v| k }
-  end
-  alias coordinates positions
-
-  def find who
-    @map.find { |k,v| v == who }[0]
-  end
-
-  def delete who
-    @map.delete find(who)
-  end
-
-  def move who, delta
-    old = find(who)
-    new = old.zip(delta).map{|a,b| a+b}
-    
-    delete who
-    self[*new] = who
-  end
-
-  private
-  def valid? point
-    point.size == 2 &&
-    (0...@width).include?(point[0]) &&
-    (0...@height).include?(point[1])
+    if point.any?
+      @point = point
+      self
+    else
+      @point
+    end
   end
 end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-__END__
-  def check x, y
-
+class Map
+  def initialize
+    @all = []
   end
 
-  def valid?
-    any? { |element| wrong? element }
+  def << what
+    @all << what
   end
-  
-  protected
-  def wrong? element
-    return true unless (0...width).include? element.x
-    return true unless (0...height).include? element.y
-    false # all is ok
+
+  def all filter=nil
+    if filter
+      if filter.is_a? Class
+        @all.select { |x| filter === x }
+
+      elsif filter.is_a? Array
+        @all.select { |x| filter[0] === x.at[0] && filter[1] === x.at[1] }
+      end
+    else
+      @all
+    end
   end
 end

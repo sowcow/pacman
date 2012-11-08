@@ -1,35 +1,20 @@
 require 'spec_helper'
 
-class Ghost < Struct.new :scared_time
-  include Placeable
-end
-def ghost
-  Ghost[0]
-end
-
-class Food
-  include Placeable
-end
-def food
-  Food.new
-end
-
-describe Placeable do
-  describe '#at' do
-    it 'takes 2 coordinates or array, used as setter and getter' do
-      ghost.at(1,2).at.should == [1,2]
-      ghost.at([2,3]).at.should == [2,3]
-    end
-
-    it 'cant place twice' do
-      expect { ghost.at(1,2).at(1,2) }.to raise_error
-      expect { ghost.at(1,2).at(2,3) }.to raise_error
-    end    
-  end
-end
-
 describe Map do
   subject { Map.new }
+
+  describe '#<<' do
+    it 'remember given object' do
+      subject << ghost.at(0,0)
+      subject.all.should have(1).object
+    end
+    it 'sets object.board' do
+      one = ghost.at(0,0)
+      one.board.should be_nil
+      subject << one
+      one.board.should == subject
+    end    
+  end
 
   describe '#all' do
     before do
@@ -40,7 +25,7 @@ describe Map do
       subject << food.at(2,2)
     end
 
-    it 'has all objects given by <<' do
+    it 'returns all objects given by <<' do
       subject.all.should have(5).objects
     end
 

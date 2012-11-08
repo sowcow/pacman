@@ -1,21 +1,3 @@
-module Placeable
-  CANT_PLACE = "can't place object twice"
-
-  # setter/getter, set once
-  def at *given
-    point = given.flatten
-
-    raise CANT_PLACE if @point && point.any?
-    
-    if point.any?
-      @point = point
-      self
-    else
-      @point
-    end
-  end
-end
-
 class Map
   def initialize
     @all = []
@@ -23,6 +5,7 @@ class Map
 
   def << what
     @all << what
+    what.board = self
   end
 
   def all filter=nil

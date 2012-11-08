@@ -38,7 +38,7 @@ describe Movable do
       end
     end
 
-    it 'fail unless can_move?' do
+    it 'fails unless can_move?' do
       game << one.at(3,3)
       game << wall.at(4,3)
       expect { one.move(:right) }.to raise_error

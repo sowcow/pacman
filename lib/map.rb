@@ -11,9 +11,12 @@ class Map
 
   def all *filters
     if filters.any?
-      filters.each_with_object(@all) do |filter, result|
+      result = @all
+      filters.each do |filter|
         result = Filter[filter].apply result
       end
+      return result
+      
     else
       @all
     end

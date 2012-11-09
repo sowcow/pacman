@@ -16,7 +16,6 @@ class Map
         result = Filter[filter].apply result
       end
       return result
-      
     else
       @all
     end

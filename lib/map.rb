@@ -11,31 +11,53 @@ class Map
 
   def all *filters
     if filters.any?
-      
-      result = @all
-      filters.each do |filter|
+      filters.each_with_object(@all) do |filter, result|
         result = Filter[filter].apply result
       end
-      return result
-
     else
-
       @all
     end
   end
 
+  def [] *a
+    all *a
+  end
+
+  def delete object
+    @all.delete object
+  end
+
+  def normalize
+    self[Wall].each do |wall|
+      wall.siblings.select{|x|Food===x}.each do |odd|
+        delete odd
+      end
+    end
+    nil
+  end
+
   def self.blank width, height
-    map = new
     max_x = width+1
     max_y = height+1
-    walls = (0..max_x).map do |x|
-              (0..max_y).map do |y|
-                [x, y] if x == 0 || x == max_x || y == 0 || y == max_y
-              end
-            end.flatten(1).compact
+    (0..max_x).each_with_object(new) do |x,map|
+      (0..max_y).each do |y|
+        if x == 0 || x == max_x || y == 0 || y == max_y
+          map << Wall.new.at(x,y)
+        else
+          map << Food.new.at(x,y)
+        end
+      end
+    end
+  end
 
-    walls.each { |pos| map << Wall.new.at(pos) }
-    map
+  def self.random width, height
+    maze = Labyrinth[width, height]
+
+    (1..maze.width).each_with_object(blank(width,height)) do |x,map|
+      (1..maze.height).each do |y|
+        map << Wall.new.at(x,y) if maze[x,y] && map.all([x,y],Wall).empty?
+      end
+    end
   end
 
 

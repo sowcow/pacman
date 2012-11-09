@@ -59,4 +59,18 @@ describe Movable do
       directions.count { |direction| one.can_move? direction }.should == 0      
     end
   end
+
+  describe '#siblings' do
+    it 'returns all other objects in the same cell' do
+      game << ghost.at(5,5)
+      game << wall.at(5,5)
+      game << food.at(5,5)
+
+      game << ghost.at(4,4)
+      game << food.at(4,4)
+
+      game[[5,5], Ghost].first.siblings.should have(2).items
+      game[[4,4], Ghost].first.siblings.should have(1).item
+    end
+  end
 end

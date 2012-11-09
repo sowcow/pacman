@@ -33,6 +33,10 @@ module Movable
     @board.all(target(direction), Wall).none?
   end
 
+  def siblings
+    @board[@point] - [self]
+  end
+
   private
   def target direction
     @point.zip(DIERCTIONS[direction]).map { |x,y| x + y }
